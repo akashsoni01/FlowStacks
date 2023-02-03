@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 
 /// Router converts an array of pushed / presented routes into a view.
-public struct Router<Screen, ScreenView: View>: View {
+public struct FSRouter<Screen, ScreenView: View>: View {
   /// The array of routes that represents the navigation stack.
   @Binding var routes: [FSRoute<Screen>]
 
@@ -35,7 +35,7 @@ public struct Router<Screen, ScreenView: View>: View {
   }
 }
 
-public extension Router {
+public extension FSRouter {
   /// Initializer for creating a Router using a binding to an array of screens.
   /// - Parameters:
   ///   - stack: A binding to an array of screens.

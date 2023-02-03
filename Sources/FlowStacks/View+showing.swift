@@ -51,7 +51,7 @@ public extension View {
         routes.wrappedValue = screenRoutes
       }
     )
-    return Router(allScreens) { allScreen, index in
+    return FSRouter(allScreens) { allScreen, index in
       switch allScreen {
       case .root:
         self

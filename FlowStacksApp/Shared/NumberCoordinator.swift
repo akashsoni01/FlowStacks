@@ -28,7 +28,7 @@ struct NumberCoordinator: View {
   }
   
   var body: some View {
-    Router($routes) { $screen, index in
+    FSRouter($routes) { $screen, index in
       if let number = Binding(unwrapping: $screen, case: /Screen.number) {
         NumberView(
           number: number,

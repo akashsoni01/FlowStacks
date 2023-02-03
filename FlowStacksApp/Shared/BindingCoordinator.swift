@@ -12,7 +12,7 @@ struct BindingCoordinator: View {
   @State var routes: Routes<Screen> = [.root(.start, embedInNavigationView: true)]
     
   var body: some View {
-    Router($routes) { $screen, _ in
+    FSRouter($routes) { $screen, _ in
       if let number = Binding(unwrapping: $screen, case: /Screen.number) {
         // Here number is a Binding<Int>, so NumberView can change its
         // value in the routes array.
