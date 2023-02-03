@@ -31,7 +31,7 @@ enum Screen {
 }
 ```
 
-A coordinator view can then manage an array of `Route<Screen>`s, representing a stack of these screens, each one either pushed or presented. In the body of the coordinator view, initialize a `Router` with a binding to the routes array, and a `ViewBuilder` closure. The closure builds a view for a given screen, e.g.:
+A coordinator view can then manage an array of `FSRoute<Screen>`s, representing a stack of these screens, each one either pushed or presented. In the body of the coordinator view, initialize a `Router` with a binding to the routes array, and a `ViewBuilder` closure. The closure builds a view for a given screen, e.g.:
 
 ```swift
 struct AppCoordinator: View {

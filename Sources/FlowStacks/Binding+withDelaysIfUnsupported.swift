@@ -25,7 +25,7 @@ public enum RouteStyle: Hashable {
   }
 }
 
-public extension Route {
+public extension FSRoute {
   /// Whether the route is pushed, presented as a sheet or presented as a full-screen
   /// cover.
   var style: RouteStyle {
@@ -45,7 +45,7 @@ public extension Binding where Value: Collection, Value.Element: RouteProtocol {
   /// changes are not supported within a single update by SwiftUI, the changes will be
   /// applied in stages. An async version of this function is also available.
   @_disfavoredOverload
-  func withDelaysIfUnsupported<Screen>(_ transform: (inout [Route<Screen>]) -> Void, onCompletion: (() -> Void)? = nil) where Value == [Route<Screen>] {
+  func withDelaysIfUnsupported<Screen>(_ transform: (inout [FSRoute<Screen>]) -> Void, onCompletion: (() -> Void)? = nil) where Value == [FSRoute<Screen>] {
     let start = wrappedValue
     let end = apply(transform, to: start)
     Task { @MainActor in
@@ -58,7 +58,7 @@ public extension Binding where Value: Collection, Value.Element: RouteProtocol {
   /// changes are not supported within a single update by SwiftUI, the changes will be
   /// applied in stages.
   @MainActor
-  func withDelaysIfUnsupported<Screen>(_ transform: (inout [Route<Screen>]) -> Void) async where Value == [Route<Screen>] {
+  func withDelaysIfUnsupported<Screen>(_ transform: (inout [FSRoute<Screen>]) -> Void) async where Value == [FSRoute<Screen>] {
     let start = wrappedValue
     let end = apply(transform, to: start)
     
@@ -66,7 +66,7 @@ public extension Binding where Value: Collection, Value.Element: RouteProtocol {
   }
   
   @MainActor
-  fileprivate func withDelaysIfUnsupported<Screen>(from start: [Route<Screen>], to end: [Route<Screen>]) async where Value == [Route<Screen>] {
+  fileprivate func withDelaysIfUnsupported<Screen>(from start: [FSRoute<Screen>], to end: [FSRoute<Screen>]) async where Value == [FSRoute<Screen>] {
     let steps = RouteSteps.calculateSteps(from: start, to: end)
     
     self.wrappedValue = steps.first!
@@ -74,7 +74,7 @@ public extension Binding where Value: Collection, Value.Element: RouteProtocol {
   }
   
   @MainActor
-  fileprivate func scheduleRemainingSteps<Screen>(steps: [[Route<Screen>]]) async where Value == [Route<Screen>] {
+  fileprivate func scheduleRemainingSteps<Screen>(steps: [[FSRoute<Screen>]]) async where Value == [FSRoute<Screen>] {
     guard let firstStep = steps.first else {
       return
     }
@@ -93,7 +93,7 @@ public enum RouteSteps {
   /// changes are not supported within a single update by SwiftUI, the changes will be
   /// applied in stages. An async version of this function is also available.
   @_disfavoredOverload
-  public static func withDelaysIfUnsupported<Screen, Owner: AnyObject>(_ owner: Owner, _ keyPath: WritableKeyPath<Owner, [Route<Screen>]>, transform: (inout [Route<Screen>]) -> Void, onCompletion: (() -> Void)? = nil) {
+  public static func withDelaysIfUnsupported<Screen, Owner: AnyObject>(_ owner: Owner, _ keyPath: WritableKeyPath<Owner, [FSRoute<Screen>]>, transform: (inout [FSRoute<Screen>]) -> Void, onCompletion: (() -> Void)? = nil) {
     let start = owner[keyPath: keyPath]
     let end = apply(transform, to: start)
     Task { @MainActor in
@@ -106,14 +106,14 @@ public enum RouteSteps {
   /// changes are not supported within a single update by SwiftUI, the changes will be
   /// applied in stages.
   @MainActor
-  public static func withDelaysIfUnsupported<Screen, Owner: AnyObject>(_ owner: Owner, _ keyPath: WritableKeyPath<Owner, [Route<Screen>]>, transform: (inout [Route<Screen>]) -> Void) async {
+  public static func withDelaysIfUnsupported<Screen, Owner: AnyObject>(_ owner: Owner, _ keyPath: WritableKeyPath<Owner, [FSRoute<Screen>]>, transform: (inout [FSRoute<Screen>]) -> Void) async {
     let start = owner[keyPath: keyPath]
     let end = apply(transform, to: start)
     await withDelaysIfUnsupported(owner, keyPath, from: start, to: end)
   }
   
   @MainActor
-  fileprivate static func withDelaysIfUnsupported<Screen, Owner: AnyObject>(_ owner: Owner, _ keyPath: WritableKeyPath<Owner, [Route<Screen>]>, from start: [Route<Screen>], to end: [Route<Screen>]) async {
+  fileprivate static func withDelaysIfUnsupported<Screen, Owner: AnyObject>(_ owner: Owner, _ keyPath: WritableKeyPath<Owner, [FSRoute<Screen>]>, from start: [FSRoute<Screen>], to end: [FSRoute<Screen>]) async {
     let binding = Binding(
       get: { [weak owner] in owner?[keyPath: keyPath] ?? [] },
       set: { [weak owner] in owner?[keyPath: keyPath] = $0 }
@@ -123,9 +123,9 @@ public enum RouteSteps {
   
   /// For a given update to an array of routes, returns the minimum intermediate steps
   /// required to ensure each update is supported by SwiftUI.
-  /// - Returns: An Array of Route arrays, representing a series of permissible steps
+  /// - Returns: An Array of FSRoute arrays, representing a series of permissible steps
   ///   from start to end.
-  public static func calculateSteps<Screen>(from start: [Route<Screen>], to end: [Route<Screen>]) -> [[Route<Screen>]] {
+  public static func calculateSteps<Screen>(from start: [FSRoute<Screen>], to end: [FSRoute<Screen>]) -> [[FSRoute<Screen>]] {
     let pairs = Array(zip(start, end))
     let firstDivergingIndex = pairs.dropFirst()
       .firstIndex(where: { $0.style != $1.style }) ?? pairs.endIndex
@@ -138,7 +138,7 @@ public enum RouteSteps {
     
     // Dismiss extraneous presented stacks.
     while var dismissStep = steps.last, dismissStep.count > firstDivergingPresentationIndex {
-      var dismissed: Route<Screen>? = dismissStep.popLast()
+      var dismissed: FSRoute<Screen>? = dismissStep.popLast()
       // Ignore pushed screens as they can be dismissed en masse.
       while dismissed?.isPresented == false, dismissStep.count > firstDivergingPresentationIndex {
         dismissed = dismissStep.popLast()
@@ -148,7 +148,7 @@ public enum RouteSteps {
     
     // Pop extraneous pushed screens.
     while var popStep = steps.last, popStep.count > firstDivergingIndex {
-      var popped: Route<Screen>? = popStep.popLast()
+      var popped: FSRoute<Screen>? = popStep.popLast()
       while popped?.style == .push, popStep.count > firstDivergingIndex, popStep.last?.style == .push {
         popped = popStep.popLast()
       }

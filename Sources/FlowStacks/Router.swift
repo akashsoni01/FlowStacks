@@ -4,7 +4,7 @@ import SwiftUI
 /// Router converts an array of pushed / presented routes into a view.
 public struct Router<Screen, ScreenView: View>: View {
   /// The array of routes that represents the navigation stack.
-  @Binding var routes: [Route<Screen>]
+  @Binding var routes: [FSRoute<Screen>]
 
   /// A closure that builds a `ScreenView` from a `Screen`and its index.
   @ViewBuilder var buildView: (Screen, Int) -> ScreenView
@@ -13,7 +13,7 @@ public struct Router<Screen, ScreenView: View>: View {
   /// - Parameters:
   ///   - stack: A binding to an array of screens.
   ///   - buildView: A closure that builds a `ScreenView` from a `Screen` and its index.
-  public init(_ routes: Binding<[Route<Screen>]>, @ViewBuilder buildView: @escaping (Screen, Int) -> ScreenView) {
+  public init(_ routes: Binding<[FSRoute<Screen>]>, @ViewBuilder buildView: @escaping (Screen, Int) -> ScreenView) {
     self._routes = routes
     self.buildView = buildView
   }
@@ -40,7 +40,7 @@ public extension Router {
   /// - Parameters:
   ///   - stack: A binding to an array of screens.
   ///   - buildView: A closure that builds a `ScreenView` from a binding to a `Screen` and its index.
-  init(_ routes: Binding<[Route<Screen>]>, @ViewBuilder buildView: @escaping (Binding<Screen>, Int) -> ScreenView) {
+  init(_ routes: Binding<[FSRoute<Screen>]>, @ViewBuilder buildView: @escaping (Binding<Screen>, Int) -> ScreenView) {
     self._routes = routes
     self.buildView = { _, index in
       let binding = Binding<Screen>(

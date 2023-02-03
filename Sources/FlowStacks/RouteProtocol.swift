@@ -44,4 +44,4 @@ public extension RouteProtocol {
   }
 }
   
-extension Route: RouteProtocol {}
+extension FSRoute: RouteProtocol {}
