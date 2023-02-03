@@ -12,7 +12,7 @@ struct ParentCoordinator: View {
 	@State var routes: Routes<Screen> = [.root(.home)]
 
   var body: some View {
-    Router($routes) { screen, _ in
+    FSRouter($routes) { screen, _ in
       switch screen {
       case .home:
         ContainerCoordinatorHomeView(
@@ -66,7 +66,7 @@ struct ChildFlowCoordinator: View {
   @State var routes: Routes<Screen> = [.root(.first)]
 
   var body: some View {
-    Router($routes) { screen, _ in
+    FSRouter($routes) { screen, _ in
       switch screen {
       case .first:
         ChildFlowFirstView(

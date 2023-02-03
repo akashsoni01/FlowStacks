@@ -2,7 +2,7 @@
 import XCTest
 
 final class RoutableCollectionTests: XCTestCase {
-  typealias RouterState = [Route<Int>]
+  typealias RouterState = [FSRoute<Int>]
   
   func testPopToCurrentNavigationRootPresented() {
     var routes: RouterState = [

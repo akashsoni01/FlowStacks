@@ -1,7 +1,7 @@
 import Foundation
 
 /// An array of `Route`s.
-public typealias Routes<Screen> = [Route<Screen>]
+public typealias Routes<Screen> = [FSRoute<Screen>]
 
 // NOTE: The RoutableCollection abstraction exists so that the methods available on Array are also
 // available on other collections, such as IdentifiedArray (from

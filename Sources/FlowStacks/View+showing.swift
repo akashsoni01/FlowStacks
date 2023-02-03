@@ -13,7 +13,7 @@ public extension View {
   /// - Parameter embedInNavigationView: Whether to embed the root screen in a navigation view.
   /// - Parameter buildView: A viewBuilder closure to build a view for a given screen binding and index. 
   /// - Returns: A view that will show the routes
-  func showing<Screen, ScreenView: View>(_ routes: Binding<[Route<Screen>]>, embedInNavigationView: Bool = false, @ViewBuilder buildViewBinding: @escaping (Binding<Screen>, Int) -> ScreenView) -> some View {
+  func showing<Screen, ScreenView: View>(_ routes: Binding<[FSRoute<Screen>]>, embedInNavigationView: Bool = false, @ViewBuilder buildViewBinding: @escaping (Binding<Screen>, Int) -> ScreenView) -> some View {
     return showing(routes, embedInNavigationView: embedInNavigationView, buildView: { screen, index in
       let screenBinding = Binding<Screen>(
         get: { routes.wrappedValue[index].screen },
@@ -29,10 +29,10 @@ public extension View {
   /// - Parameter embedInNavigationView: Whether to embed the root screen in a navigation view.
   /// - Parameter buildView: A viewBuilder closure to build a view for a given screen and index.
   /// - Returns: A view that will show the routes
-  func showing<Screen, ScreenView: View>(_ routes: Binding<[Route<Screen>]>, embedInNavigationView: Bool = false, @ViewBuilder buildView: @escaping (Screen, Int) -> ScreenView) -> some View {
-    let allScreens = Binding<[Route<AllScreen<Screen>>]>(
+  func showing<Screen, ScreenView: View>(_ routes: Binding<[FSRoute<Screen>]>, embedInNavigationView: Bool = false, @ViewBuilder buildView: @escaping (Screen, Int) -> ScreenView) -> some View {
+    let allScreens = Binding<[FSRoute<AllScreen<Screen>>]>(
       get: {
-        let root: Route<AllScreen<Screen>> = .root(AllScreen.root, embedInNavigationView: embedInNavigationView)
+        let root: FSRoute<AllScreen<Screen>> = .root(AllScreen.root, embedInNavigationView: embedInNavigationView)
         let remainder = routes.wrappedValue.map { route in
           route.map(AllScreen<Screen>.screen)
         }
@@ -40,7 +40,7 @@ public extension View {
       },
       set: { allScreenRoutes in
         let screenRoutes = allScreenRoutes[1...]
-          .compactMap { (route: Route<AllScreen<Screen>>) -> Route<Screen> in
+          .compactMap { (route: FSRoute<AllScreen<Screen>>) -> FSRoute<Screen> in
             route.map { (allScreen: AllScreen<Screen>) -> Screen in
               guard case .screen(let screen) = allScreen else {
                 fatalError("Root screen in non-root position. This should not be possible.")
@@ -51,7 +51,7 @@ public extension View {
         routes.wrappedValue = screenRoutes
       }
     )
-    return Router(allScreens) { allScreen, index in
+    return FSRouter(allScreens) { allScreen, index in
       switch allScreen {
       case .root:
         self

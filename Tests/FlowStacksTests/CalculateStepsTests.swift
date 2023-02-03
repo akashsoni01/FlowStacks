@@ -2,7 +2,7 @@
 import XCTest
 
 final class CalculateStepsTests: XCTestCase {
-  typealias RouterState = [Route<Int>]
+  typealias RouterState = [FSRoute<Int>]
   
   func testPushOneAtATime() {
     let start: RouterState = [

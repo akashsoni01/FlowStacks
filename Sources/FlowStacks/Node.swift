@@ -4,7 +4,7 @@ import SwiftUI
 /// A view that represents a linked list of routes, each pushing or presenting the next in
 /// the list.
 indirect enum Node<Screen, V: View>: View {
-  case route(Route<Screen>, next: Node<Screen, V>, allRoutes: Binding<[Route<Screen>]>, index: Int, buildView: (Screen) -> V)
+  case route(FSRoute<Screen>, next: Node<Screen, V>, allRoutes: Binding<[FSRoute<Screen>]>, index: Int, buildView: (Screen) -> V)
   case end
   
   private var isActiveBinding: Binding<Bool> {
@@ -61,7 +61,7 @@ indirect enum Node<Screen, V: View>: View {
     }
   }
   
-  private var route: Route<Screen>? {
+  private var route: FSRoute<Screen>? {
     switch self {
     case .end:
       return nil

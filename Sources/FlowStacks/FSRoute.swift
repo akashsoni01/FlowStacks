@@ -2,7 +2,7 @@ import Foundation
 
 /// A step in the navigation flow of an app, encompassing a Screen and how it should be shown,
 /// e.g. via a push navigation, a sheet or a full-screen cover.
-public enum Route<Screen> {
+public enum FSRoute<Screen> {
   /// A push navigation. Only valid if the most recently presented screen is embedded in a `NavigationView`.
   /// - Parameter screen: the screen to be shown.
   case push(Screen)
@@ -22,7 +22,7 @@ public enum Route<Screen> {
   
   /// The root of the stack. The presentation style is irrelevant as it will not be presented.
   /// - Parameter screen: the screen to be shown.
-  public static func root(_ screen: Screen, embedInNavigationView: Bool = false) -> Route {
+  public static func root(_ screen: Screen, embedInNavigationView: Bool = false) -> FSRoute {
     return .sheet(screen, embedInNavigationView: embedInNavigationView, onDismiss: nil)
   }
   
@@ -69,7 +69,7 @@ public enum Route<Screen> {
     }
   }
   
-  public func map<NewScreen>(_ transform: (Screen) -> NewScreen) -> Route<NewScreen> {
+  public func map<NewScreen>(_ transform: (Screen) -> NewScreen) -> FSRoute<NewScreen> {
     switch self {
     case .push:
       return .push(transform(screen))
@@ -84,11 +84,11 @@ public enum Route<Screen> {
   }
 }
 
-extension Route: Equatable where Screen: Equatable {
+extension FSRoute: Equatable where Screen: Equatable {
   /// Compares two Routes for equality, based on screen equality and equality of presentation styles.
   /// Note that any `onDismiss` closures are ignored when checking for equality.
   /// - Returns: A Bool indicating if the two are equal.
-  public static func == (lhs: Route, rhs: Route) -> Bool {
+  public static func == (lhs: FSRoute, rhs: FSRoute) -> Bool {
     return lhs.style == rhs.style && lhs.screen == rhs.screen
   }
 }

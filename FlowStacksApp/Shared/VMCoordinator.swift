@@ -37,7 +37,7 @@ struct VMCoordinator: View {
   @ObservedObject var viewModel = VMCoordinatorViewModel()
     
   var body: some View {
-    Router($viewModel.routes) { screen, _ in
+    FSRouter($viewModel.routes) { screen, _ in
       switch screen {
       case .home(let viewModel):
         HomeView(viewModel: viewModel)

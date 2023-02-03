@@ -16,8 +16,8 @@ extension Screen: ExpressibleByIntegerLiteral, Hashable {
 struct NumberCoordinator: View {
   @State var routes: Routes<Screen> = [.root(0, embedInNavigationView: true)]
   
-  var randomRoutes: [Route<Screen>] {
-    let options: [[Route<Screen>]] = [
+  var randomRoutes: [FSRoute<Screen>] {
+    let options: [[FSRoute<Screen>]] = [
       [.root(0, embedInNavigationView: true)],
       [.root(0, embedInNavigationView: true), .push(1), .push(2), .push(3), .sheet(4, embedInNavigationView: true), .push(5)],
       [.root(0, embedInNavigationView: true), .push(1), .push(2), .push(3)],
@@ -28,7 +28,7 @@ struct NumberCoordinator: View {
   }
   
   var body: some View {
-    Router($routes) { $screen, index in
+    FSRouter($routes) { $screen, index in
       if let number = Binding(unwrapping: $screen, case: /Screen.number) {
         NumberView(
           number: number,
@@ -109,9 +109,9 @@ struct NumberView: View {
 
 // Included so that the same example code can be used for macOS too.
 #if os(macOS)
-extension Route {
+extension FSRoute {
   
-  static func cover(_ screen: Screen, embedInNavigationView: Bool = false) -> Route {
+  static func cover(_ screen: Screen, embedInNavigationView: Bool = false) -> FSRoute {
     sheet(screen, embedInNavigationView: embedInNavigationView)
   }
 }
